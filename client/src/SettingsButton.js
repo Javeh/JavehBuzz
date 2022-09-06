@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import Popup from 'reactjs-popup';
 import SettingsMenu from './SettingsMenu'
 import gear from './assets/evil_icons_gear_MIT.svg'
+import { response } from 'express';
 
 
 class ErrorBoundary extends React.Component {
@@ -30,8 +31,8 @@ class SettingsButton extends Component {
   constructor(props) {
 
 
-    
-    
+
+
     super(props);
     this.state = {
       showMenu: !this.verifySettings(),
@@ -59,13 +60,13 @@ class SettingsButton extends Component {
     })
 
   }
-  handleClose(){
-    if(this.verifySettings()){
+  handleClose() {
+    if (this.verifySettings()) {
       this.setState({
         showMenu: false
       });
     }
-    
+
   }
 
 
@@ -77,7 +78,7 @@ class SettingsButton extends Component {
   }
 
   componentDidMount() {
-    
+
 
   }
 
@@ -89,7 +90,7 @@ class SettingsButton extends Component {
 
     localStorage.setItem("name", name);
     localStorage.setItem("room", room);
-    
+
     //this.props.handleEdit(name, room);
     if (!this.verifySettings()) {
       alert("Failed!");
@@ -98,7 +99,7 @@ class SettingsButton extends Component {
     }
     else {
       this.hideModal();
-      /*
+
 
       const requestOptions = {
         method: 'POST',
@@ -108,9 +109,16 @@ class SettingsButton extends Component {
           room: this.state.room,
         })
       };
-      fetch(window.location.origin + "/api/register", requestOptions);
-      */
-    }
+      fetch(window.location.origin + "/api/register", requestOptions)
+        .then(response => {
+          if (!response.ok) {
+            alert("Failed!")
+            this.showModal();
+          }
+
+        }
+        )
+    };
 
 
 
@@ -127,7 +135,7 @@ class SettingsButton extends Component {
         <ErrorBoundary>
           {/*<Navigate to = {this.state.showMenu ? "/settings" : "/" } replace = {true}></Navigate>*/}
         </ErrorBoundary>
-       <SettingsMenu show={this.state.showMenu} handleClose={this.handleClose} handleSubmit={this.handleSubmit} room= "" name= ""></SettingsMenu>
+        <SettingsMenu show={this.state.showMenu} handleClose={this.handleClose} handleSubmit={this.handleSubmit} room="" name=""></SettingsMenu>
         <button type="button" className="SettingsButton" onClick={this.showModal}>
           <img className="GearIcon" src={gear} height="100%" width="100%" />
         </button>

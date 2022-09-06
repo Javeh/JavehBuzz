@@ -21,9 +21,9 @@ const SettingsMenu = ({ handleClose, show, children, handleSubmit, name, room })
         {children}
         <button type="button" className="CloseSettingsButton" onClick={handleClose}><img src={xbutton} alt="Close Settings" height="100" width="100" /></button>
         <form className="buffered" onSubmit={e => onSubmit(e, handleClose, handleSubmit)}>
-          <label htmlFor="name"><strong>Name </strong></label>
+          <label for="name"><strong>Name </strong></label>
           <input type="text" name="name" defaultValue={name} autoComplete = "off" ></input><br></br>
-          <label htmlFor="roomcode"><strong> Room # </strong></label>
+          <label for="roomcode"><strong> Room # </strong></label>
           <input type="text" name="roomcode" defaultValue={room} autoComplete = "off"></input><br></br><br></br>
           <button className='form-submit-button' type="submit">Submit</button>
         </form>

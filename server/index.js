@@ -33,10 +33,13 @@ app.use(cookieSession({
 }))
 
 app.post("/api/register", (req, res) => {
-    console.log("registration!");
     console.log(req.body);
-    res.sendStatus(200);
-
+    if(rooms[req['room']] == null){
+      res.statusCode(400);
+    }
+    else{
+      res.statusCode(200);
+    }
 });
 
 
@@ -46,8 +49,8 @@ app.get("/api/rooms", (req, res) => {
 
         res.json({
             room: room,
-            
-         
+            buzzed: room['buzzed'] === req.body['name'],
+            locked: room['locked']
     })
 });
 
@@ -79,7 +82,7 @@ function clearBuzzers(room){
     if(!rooms[room]){
         createRoom(room);
     }
-    rooms[room]['state'] = 'clear';    
+    rooms[room]['locked'] = 'clear';    
 }
 function deleteRoom(room){
     rooms.delete(room);
@@ -87,9 +90,10 @@ function deleteRoom(room){
 function createRoom(room){
         console.log("creating room " + room);
         rooms[room] = {
-            'state': 'clear', //locked
-            'mode': 'jeopardy', //jeopardy, btc
-            'players': {}
+            'locked': 'clear', //clear, locked
+            'mode': 'btc', //jeopardy, btc
+            'players': {},
+            'buzzed': ""
         }
 }
 
