@@ -1,0 +1,14 @@
+.SettingsButton {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  position:absolute;
+  top: 10px;
+  right: 10px;
+}
+.GearIcon {
+  transform: rotate(22.5deg);
+}
