@@ -1,7 +1,6 @@
 import './SettingsButton.css'
 
 import React, { Component } from 'react';
-import Popup from 'reactjs-popup';
 import SettingsMenu from './SettingsMenu'
 import gear from './assets/evil_icons_gear_MIT.svg'
 
@@ -71,44 +70,53 @@ class SettingsButton extends Component {
 
 
   verifySettings() {
-    if (localStorage.getItem("name") == null || localStorage.getItem("name") == "" || localStorage.getItem("room") == null || localStorage.getItem("room") == "") {
-      return false;
+    if (localStorage.getItem("name") == null || localStorage.getItem("name") == "" || 
+    localStorage.getItem("room") == null || localStorage.getItem("room") == ""){
+        return false;
     }
     return true;
   }
 
   componentDidMount() {
-    
-
+    if(!this.verifySettings()){
+      this.showModal();
+    }
+    else{
+      this.handleSubmit(localStorage.getItem("name"), localStorage.getItem("room"));
+    }
   }
 
   handleSubmit(name, room) {
-    this.setState({
-      name: name,
-      room: room
-    });
+    
 
     localStorage.setItem("name", name);
     localStorage.setItem("room", room);
     
-    //this.props.handleEdit(name, room);
+    
     if (!this.verifySettings()) {
       this.showModal();
       return;
     }
     else {
       this.hideModal();
-      
+      this.setState({
+
+        name: name,
+        room: room
+      });
 
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: this.state.name,
-          room: this.state.room,
+          name: name,
+          room: room,
         })
       };
-      fetch(window.location.origin + "/api/register", requestOptions);
+      fetch(window.location.origin + "/api/register", requestOptions)
+      .then(response=> {if( !response.status){
+        this.showModal();
+    }});
       
 
       this.props.handleEdit(name, room);

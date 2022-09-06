@@ -99,7 +99,7 @@ export default class OutsideAlerter extends Component {
             <SettingsButton name = "" room = "" handleEdit = {this.handleEdit}></SettingsButton>
 
             <h1 className = "noselect">{this.state.name}</h1>
-            <h1 className = "noselect">{this.state.room == null ? "" : "Room:"} {this.state.room}</h1>
+            <h1 className = "noselect">{this.state.room == null ||this.state.active.room == "" ? "" : "Room:"} {this.state.room}</h1>
         </div>;
     }
 }

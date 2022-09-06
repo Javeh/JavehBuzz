@@ -3,7 +3,6 @@ import './SettingsMenu.css'
 import xbutton from './assets/ei-close-o.svg'
 
 import React from 'react';
-import { BrowserRouter, NavLink, Route } from 'react-router-dom';
 
 
 //TODO https://medium.com/@whwrd/building-a-beautiful-text-input-component-in-react-f85564cc7e86

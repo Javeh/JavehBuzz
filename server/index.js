@@ -14,11 +14,13 @@ const { exit } = require("process");
 const { text } = require("body-parser");
 const { createBrotliCompress } = require("zlib");
 var cookieSession = require('cookie-session');
+const { resolve } = require("path");
 
 
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 app.use(bodyParser.json());
+
 
 app.get("/api", (req, res) => {
     res.json({ message: "Hello from server!" });
