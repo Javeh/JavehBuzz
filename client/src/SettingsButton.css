@@ -11,4 +11,5 @@
 }
 .GearIcon {
   transform: rotate(22.5deg);
+  user-select: none;
 }

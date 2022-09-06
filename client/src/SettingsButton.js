@@ -43,6 +43,7 @@ class SettingsButton extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.verifySettings = this.verifySettings.bind(this);
     this.handleClose = this.handleClose.bind(this);
+
   }
 
 
@@ -92,13 +93,12 @@ class SettingsButton extends Component {
     
     //this.props.handleEdit(name, room);
     if (!this.verifySettings()) {
-      alert("Failed!");
       this.showModal();
       return;
     }
     else {
       this.hideModal();
-      /*
+      
 
       const requestOptions = {
         method: 'POST',
@@ -109,7 +109,9 @@ class SettingsButton extends Component {
         })
       };
       fetch(window.location.origin + "/api/register", requestOptions);
-      */
+      
+
+      this.props.handleEdit(name, room);
     }
 
 
