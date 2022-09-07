@@ -60,11 +60,13 @@ app.get("/api/rooms/:id", (req, res) => {
   if (rooms[room] == null) {
     res.sendStatus(400);
   }
+  else{
   res.json({
     room: room,
     locked: rooms[room]['locked'],
     buzzed: rooms[room]['buzzed']
   })
+}
 });
 
 app.post("/api/buzz", (req, res) => {
