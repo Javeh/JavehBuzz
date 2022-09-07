@@ -188,7 +188,7 @@ process.stdin.on('data', function (text) {
     changeMode(text.trim().split(" ")[1])
   }
   else if (text.trim().split(" ")[0] === 'help') {
-    console.log("clear <room>\ncreate <room>\nrooms\ndelete")
+    console.log("clear <room>\ncreate <room>\nrooms\ndelete\nchange <room>")
   }
   else if (text.trim() === 'stop' || text.trim() === 'exit') {
     exit();

@@ -5,6 +5,8 @@ import './PassiveButton.css'
 /**
  * Component that alerts if you click outside of it
  */
+
+const REFRESH_INTERVAL = 500;
 export default class OutsideAlerter extends Component {
     constructor(props) {
         super(props);
@@ -15,7 +17,7 @@ export default class OutsideAlerter extends Component {
         this.handleEdit = this.handleEdit.bind(this);
         this.handleBuzz = this.handleBuzz.bind(this);
 
-        
+
         this.state = {
             color: "firebrick",
             active: false,
@@ -25,7 +27,7 @@ export default class OutsideAlerter extends Component {
             enabled: false
         };
         const interval = setInterval(() => {
-            if(!this.state.enabled){
+            if (!this.state.enabled) {
                 return;
             }
 
@@ -33,18 +35,19 @@ export default class OutsideAlerter extends Component {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             };
-            console.log(window.location.origin + "/api/rooms/" +  this.state.room);
-            fetch(window.location.origin + "/api/rooms/" +  this.state.room, requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                this.setState({
-                    active: data['locked']
+            console.log(window.location.origin + "/api/rooms/" + this.state.room);
+            fetch(window.location.origin + "/api/rooms/" + this.state.room, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        active: data['locked']
+                    });
+                    document.body.style = "background: " + (this.state.active ? "limegreen" : "firebrick");
+
+
                 });
-                document.body.style = "background: " + (this.state.active ? "limegreen" : "firebrick");
 
-            });
-
-        }, 200);
+        }, REFRESH_INTERVAL);
 
     }
 
@@ -79,21 +82,21 @@ export default class OutsideAlerter extends Component {
             return;
         }
         if (event.keyCode === 32 && document.activeElement.nodeName.toLowerCase() !== "input") {
-            
+
             this.handleBuzz();
         }
     }
 
-    handleEdit(name, room){
+    handleEdit(name, room) {
         this.setState({
             name: name,
             room: room,
             enabled: true
         });
-           
+
     }
 
-    handleBuzz(){
+    handleBuzz() {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -103,13 +106,13 @@ export default class OutsideAlerter extends Component {
             })
         };
         fetch(window.location.origin + "/api/buzz", requestOptions)
-        .then(response => response.json())
-        .then(data => {
-            this.setState({
-                active: data['buzzed']
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    active: data['locked']
+                })
+                document.body.style = "background: " + (this.state.active ? "limegreen" : "firebrick");
             })
-            document.body.style = "background: " + (this.state.active ? "limegreen" : "firebrick");
-        })
 
 
     }
@@ -119,10 +122,10 @@ export default class OutsideAlerter extends Component {
     render() {
 
         return <div className="Buzzer" ref={this.wrapperRef}>{this.props.children}
-            <SettingsButton name = "" room = "" handleEdit = {this.handleEdit}></SettingsButton>
+            <SettingsButton name="" room="" handleEdit={this.handleEdit}></SettingsButton>
 
-            <h1 className = "noselect">{this.state.name}</h1>
-            <h1 className = "noselect">{this.state.room == null ||this.state.room == "" ? "" : "Room:"} {this.state.room}</h1>
+            <h1 className="noselect">{this.state.name}</h1>
+            <h1 className="noselect">{this.state.room == null || this.state.room == "" ? "" : "Room:"} {this.state.room}</h1>
         </div>;
     }
 }
