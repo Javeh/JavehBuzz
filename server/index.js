@@ -97,7 +97,7 @@ app.post("/api/buzz", (req, res) => {
   }
 
     res.json({
-      buzzed: buzzed
+      success: buzzed
     });
     // the player who buzzed will keep thinking they buzzed until buzzers unlock
 
@@ -200,3 +200,4 @@ process.stdin.on('data', function (text) {
 
 //default commands
 createRoom("0");
+changeMode("0");
