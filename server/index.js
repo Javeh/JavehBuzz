@@ -91,7 +91,7 @@ app.post("/api/buzz", (req, res) => {
     }
     else if (rooms[room]['mode'] == 'jeopardy') {
       {
-        setTimeout(clearBuzzers(room), JEOPARDY_TIME);
+      setTimeout(() =>  {clearBuzzers(room)} , JEOPARDY_TIME);
       }
     }
   }
