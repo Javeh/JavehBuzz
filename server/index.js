@@ -62,7 +62,8 @@ app.get("/api/rooms/:id", (req, res) => {
   }
   res.json({
     room: room,
-    locked: rooms[room]['locked']
+    locked: rooms[room]['locked'],
+    buzzed: rooms[room]['buzzed']
   })
 });
 
@@ -81,6 +82,7 @@ app.post("/api/buzz", (req, res) => {
     console.log(name + " buzzed!");
     rooms[room]['locked'] = true;
     buzzed = true;
+    rooms[room]['buzzed'] = name;
     if (rooms[room]['mode'] == 'btc') {
       setTimeout(() =>  {clearBuzzers(room)} , BTC_TIME);
     }
@@ -128,6 +130,7 @@ function clearBuzzers(room) {
     createRoom(room);
   }
   rooms[room]['locked'] = false;
+  rooms[room]['buzzed'] = "";
 }
 function deleteRoom(room) {
   rooms.delete(room);
@@ -145,7 +148,8 @@ function createRoom(room) {
   rooms[room] = {
     locked: false, 
     mode: 'btc', //jeopardy, btc
-    players: []
+    players: [],
+    buzzed: ""
   }
 }
 // command : {args} info
