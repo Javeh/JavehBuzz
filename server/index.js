@@ -180,7 +180,7 @@ process.stdin.on('data', function (text) {
   else if (text.trim() === 'stop' || text.trim() === 'exit') {
     exit();
   }
-  process.stdout._write("> ");
+  //process.stdout._write("> ");
 
 });
 
