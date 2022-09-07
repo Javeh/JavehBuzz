@@ -15,6 +15,7 @@ const { text } = require("body-parser");
 const { createBrotliCompress } = require("zlib");
 var cookieSession = require('cookie-session');
 const { clear } = require("console");
+const { REPL_MODE_SLOPPY } = require("repl");
 
 
 app.use(express.static(path.resolve(__dirname, '../client/build')));
@@ -154,6 +155,15 @@ function createRoom(room) {
     buzzed: ""
   }
 }
+
+function changeMode(room){
+  if(rooms[room]['mode'] === 'btc'){
+    rooms[room]['mode'] = 'jeopardy';
+  }
+  else{
+    rooms[room]['mode'] = 'btc';
+  }
+}
 // command : {args} info
 commands = {}
 //TODO make a proper command system
@@ -173,6 +183,9 @@ process.stdin.on('data', function (text) {
   }
   else if (text.trim().split(" ")[0] === 'delete') {
     deleteRoom(text.trim().split(" "[1]));
+  }
+  else if(text.trim().split(" ")[0] === 'change'){
+    changeMode(text.trim().split(" ")[1])
   }
   else if (text.trim().split(" ")[0] === 'help') {
     console.log("clear <room>\ncreate <room>\nrooms\ndelete")
