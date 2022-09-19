@@ -149,7 +149,7 @@ class SettingsButton extends Component {
           show={this.state.showMenu}
           handleClose={this.handleClose}
           handleSubmit={this.handleSubmit}
-          room="0"
+          room=""
           name=""
         ></SettingsMenu>
         <button
