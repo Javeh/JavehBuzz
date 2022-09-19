@@ -41,7 +41,8 @@ app.post("/api/register", (req, res) => {
 
   room = req.body["room"];
   if (rooms[room] == null) {
-    res.sendStatus(400);
+    res.sendStatus(200);
+    createRoom(req.body["room"]);
   } else {
     res.sendStatus(200);
     addPlayer(room, req.body["name"]);
@@ -135,7 +136,7 @@ function createRoom(room) {
   console.log("creating room " + room);
   rooms[room] = {
     locked: false,
-    mode: "btc", //jeopardy, btc
+    mode: "jeopardy", //jeopardy, btc
     players: [],
     buzzed: "",
   };
@@ -176,3 +177,4 @@ process.stdin.on("data", function (text) {
 
 //default commands
 createRoom("0");
+changeMode("0");
