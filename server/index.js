@@ -42,10 +42,10 @@ app.post("/api/register", (req, res) => {
   room = req.body["room"];
   if (rooms[room] == null) {
     res.sendStatus(200);
-    createRoom(req.body["room"]);
+    createRoom(req.body["room"].trim());
   } else {
     res.sendStatus(200);
-    addPlayer(room, req.body["name"]);
+    addPlayer(room, req.body["name"].trim());
   }
 });
 
