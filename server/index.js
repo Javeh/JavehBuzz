@@ -37,7 +37,7 @@ app.use(
 
 app.post("/api/register", (req, res) => {
   console.log("registration!");
-  console.log(req.body["name"].trim());
+  console.log("|"+ req.body["name"].trim() + "|");
 
   room = req.body["room"];
   if (rooms[room] == null) {
