@@ -67,6 +67,8 @@ app.get("/api/rooms/:id", (req, res) => {
 app.post("/api/buzz", (req, res) => {
   const room = req.body["room"];
   const name = req.body["name"];
+  console.log(req.body);
+
   var buzzed = false;
 
   if (rooms[room] == null) {
@@ -93,7 +95,8 @@ app.post("/api/buzz", (req, res) => {
   }
 
   res.json({
-    success: buzzed,
+    buzzed: buzzed,
+
   });
   // the player who buzzed will keep thinking they buzzed until buzzers unlock
 });
@@ -136,7 +139,7 @@ function createRoom(room) {
   console.log("creating room " + room);
   rooms[room] = {
     locked: false,
-    mode: "jeopardy", //jeopardy, btc
+    mode: "btc", //jeopardy, btc
     players: [],
     buzzed: "",
   };
@@ -149,32 +152,43 @@ function changeMode(room) {
     rooms[room]["mode"] = "btc";
   }
 }
+
+function printRooms() {
+  console.log(rooms);
+}
+
+function help() {
+  console.log(commands);
+}
+
+//default commands
+createRoom("0");
+
 // command : {args} info
-commands = {};
+commands = [clearBuzzers, createRoom, printRooms, changeMode, deleteRoom];
+
 //TODO make a proper command system
 
 process.stdin.resume();
 process.stdin.setEncoding("utf8");
 
 process.stdin.on("data", function (text) {
-  if (text.trim().split(" ")[0] === "clear") {
-    clearBuzzers(text.trim().split(" ")[1]);
-  } else if (text.trim().split(" ")[0] === "create") {
-    createRoom(text.trim().split(" ")[1]);
-  } else if (text.trim().split(" ")[0] === "rooms") {
-    console.log(rooms);
-  } else if (text.trim().split(" ")[0] === "delete") {
-    deleteRoom(text.trim().split(" "[1]));
-  } else if (text.trim().split(" ")[0] === "change") {
-    changeMode(text.trim().split(" ")[1]);
-  } else if (text.trim().split(" ")[0] === "help") {
-    console.log("clear <room>\ncreate <room>\nrooms\ndelete\nchange <room>");
-  } else if (text.trim() === "stop" || text.trim() === "exit") {
-    exit();
+  try {
+    var rst = eval(text);
+    if (rst) {
+      console.log(rst);
+    }
+  } catch (e) {
+    console.log(e);
   }
-  //process.stdout._write("> ");
+
+  process.stdout._write("> ");
+
 });
 
 //default commands
 createRoom("0");
-changeMode("0");
+
+setTimeout(() => {
+  process.stdout._write("> ");
+}, 250);
