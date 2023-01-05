@@ -37,14 +37,15 @@ app.use(
 
 app.post("/api/register", (req, res) => {
   console.log("registration!");
-  console.log(req.body);
+  console.log("|"+ req.body["name"].trim() + "|");
 
   room = req.body["room"];
   if (rooms[room] == null) {
-    res.sendStatus(400);
+    res.sendStatus(200);
+    createRoom(req.body["room"].trim());
   } else {
     res.sendStatus(200);
-    addPlayer(room, req.body["name"]);
+    addPlayer(room, req.body["name"].trim());
   }
 });
 
@@ -67,6 +68,7 @@ app.post("/api/buzz", (req, res) => {
   const room = req.body["room"];
   const name = req.body["name"];
   console.log(req.body);
+
   var buzzed = false;
 
   if (rooms[room] == null) {
@@ -94,6 +96,7 @@ app.post("/api/buzz", (req, res) => {
 
   res.json({
     buzzed: buzzed,
+
   });
   // the player who buzzed will keep thinking they buzzed until buzzers unlock
 });
@@ -163,6 +166,7 @@ createRoom("0");
 
 // command : {args} info
 commands = [clearBuzzers, createRoom, printRooms, changeMode, deleteRoom];
+
 //TODO make a proper command system
 
 process.stdin.resume();
@@ -179,6 +183,7 @@ process.stdin.on("data", function (text) {
   }
 
   process.stdout._write("> ");
+
 });
 
 //default commands
