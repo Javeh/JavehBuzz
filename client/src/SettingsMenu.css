@@ -15,7 +15,8 @@
     top:50%;
     left:50%;
     transform: translate(-50%,-50%);
-  }
+    animation: 3s ease-in 1s infinite reverse both running slidein;
+    }
   
   .display-block {
     display: block;

@@ -8,7 +8,7 @@ const app = express();
 
 const bodyParser = require("body-parser");
 const { application } = require("express");
-const { exit } = require("process");
+const { exit, off } = require("process");
 const { text } = require("body-parser");
 const { createBrotliCompress } = require("zlib");
 var cookieSession = require("cookie-session");
@@ -19,12 +19,55 @@ app.use(express.static(path.resolve(__dirname, "../client/build")));
 
 app.use(bodyParser.json());
 
+var expressWs = require('express-ws')(app);
+
+
+
+
 const JEOPARDY_TIME = 5000;
+const JEOPARDY_LOCKOUT_TIME = 2000;
 const BTC_TIME = 500;
+
+const Modes = {
+  Jeopardy: "jeopardy",
+  BTC: "btc"
+}
+
+
+class Room{
+  /**
+   * 
+   * @param {Modes} mode A mode enum 
+   */
+  constructor(mode){
+    this.mode = mode;
+    switch(mode){
+      case Modes.Jeopardy:
+        this.lockout = JEOPARDY_LOCKOUT_TIME;
+        this.time = JEOPARDY_TIME;
+        break;
+      case Modes.BTC:
+        this.lockout = BTC_TIME;
+        this.time = BTC_TIME;
+        break;
+      default:
+        exit();
+        break;
+    }
+    
+    this.locked = false;
+    this.buzzed = "";
+    this.players = [];
+  }
+
+}
 
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
+
+
+
 
 app.use(
   cookieSession({
@@ -37,7 +80,7 @@ app.use(
 
 app.post("/api/register", (req, res) => {
   console.log("registration!");
-  console.log("|"+ req.body["name"].trim() + "|");
+  console.log("|"+ req.body["name"].trim() + "|" + req.body['room']);
 
   room = req.body["room"];
   if (rooms[room] == null) {
@@ -67,37 +110,39 @@ app.get("/api/rooms/:id", (req, res) => {
 app.post("/api/buzz", (req, res) => {
   const room = req.body["room"];
   const name = req.body["name"];
-  console.log(req.body);
-
+  console.log("/api/buzz: " + JSON.stringify(req.body));
+  
   var buzzed = false;
 
   if (rooms[room] == null) {
     res.sendStatus(400);
     return;
   }
+  
+  var time;
 
-  if (rooms[room]["locked"] == false) {
-    console.log(name + " buzzed!");
-    rooms[room]["locked"] = true;
+  if(!rooms[room].locked){
     buzzed = true;
-    rooms[room]["buzzed"] = name;
-    if (rooms[room]["mode"] == "btc") {
-      setTimeout(() => {
-        clearBuzzers(room);
-      }, BTC_TIME);
-    } else if (rooms[room]["mode"] == "jeopardy") {
-      {
-        setTimeout(() => {
-          clearBuzzers(room);
-        }, JEOPARDY_TIME);
-      }
-    }
+    rooms[room].locked = true;
+    rooms[room].buzzed = name;
+    time = rooms[room].time;
+    
+    setTimeout(() => {
+      clearBuzzers(room);
+    }, time);
+  }
+  else{
+    time = rooms[room].lockout;
   }
 
-  res.json({
-    buzzed: buzzed,
+
+  var response = res.json({
+    
+    success: buzzed,
+    time: time
 
   });
+
   // the player who buzzed will keep thinking they buzzed until buzzers unlock
 });
 
@@ -108,6 +153,8 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
+
+
 
 let rooms = {};
 
@@ -124,8 +171,8 @@ function clearBuzzers(room) {
   if (!rooms[room]) {
     createRoom(room);
   }
-  rooms[room]["locked"] = false;
-  rooms[room]["buzzed"] = "";
+  rooms[room].locked = false;
+  rooms[room].buzzed = "";
 }
 function deleteRoom(room) {
   rooms.delete(room);
@@ -137,20 +184,20 @@ function addPlayer(room, player) {
 
 function createRoom(room) {
   console.log("creating room " + room);
-  rooms[room] = {
-    locked: false,
-    mode: "btc", //jeopardy, btc
-    players: [],
-    buzzed: "",
-  };
+  rooms[room] = new Room(Modes.BTC);
 }
 
 function changeMode(room) {
-  if (rooms[room]["mode"] === "btc") {
-    rooms[room]["mode"] = "jeopardy";
-  } else {
-    rooms[room]["mode"] = "btc";
+  var tempPlayers = rooms[room].players;
+
+  if(rooms[room].mode == Modes.Jeopardy){
+    rooms[room] = new Room(Modes.BTC);
   }
+  else{
+    rooms[room] = new Room(Modes.Jeopardy);
+  }
+
+  rooms[room].players = tempPlayers;
 }
 
 function printRooms() {

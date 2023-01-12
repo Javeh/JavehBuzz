@@ -69,16 +69,7 @@ class SettingsButton extends Component {
         room: room,
       }),
     };
-    fetch(window.location.origin + "/api/register", requestOptions).then(
-      (response) => {
-        if (response.status != 200) {
-          this.showModal();
-          return;
-        } else {
-          this.props.handleEdit(name, room);
-        }
-      }
-    );
+    fetch(window.location.origin + "/api/register", requestOptions);
   }
 
   verifySettings() {

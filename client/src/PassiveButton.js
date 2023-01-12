@@ -7,6 +7,11 @@ import "./PassiveButton.css";
  */
 
 const REFRESH_INTERVAL = 500;
+
+const AUTO_REFRESH = false;
+
+const INACTIVE_COLOR = "firebrick";
+
 export default class OutsideAlerter extends Component {
   constructor(props) {
     super(props);
@@ -21,6 +26,7 @@ export default class OutsideAlerter extends Component {
       color: "firebrick",
       active: false,
       locked: false,
+      lastTime: 0,
       room:
         localStorage.getItem("room") == null
           ? ""
@@ -32,7 +38,7 @@ export default class OutsideAlerter extends Component {
       enabled: false,
     };
     const interval = setInterval(() => {
-      if (!this.state.enabled) {
+      if (!this.state.enabled || !AUTO_REFRESH) {
         return;
       }
 
@@ -116,9 +122,36 @@ export default class OutsideAlerter extends Component {
         this.setState({
           active: data["success"],
         });
-        document.body.style =
-          "background: " + (this.state.active ? "limegreen" : "firebrick");
+        if(this.state.active){
+          this.setColor("limegreen", data["time"]);
+          this.setActive(data["time"]);
+        }
+        else{
+          this.setColor("yellow", data["time"]);
+        }
       });
+  }
+
+
+  setColor(color, milliseconds){
+
+    document.body.style = "background: " + color;
+    var currentTime = new Date();
+    this.setState({
+      lastTime : currentTime
+    });
+    setTimeout(() => {
+
+      //If something else came along later and changed the time, we don't want to mess with that.
+      if (this.state.lastTime > currentTime){
+        return;
+      }
+      
+      document.body.style = "background: " + INACTIVE_COLOR;
+
+
+
+    }, milliseconds);
   }
 
   render() {
@@ -126,8 +159,8 @@ export default class OutsideAlerter extends Component {
       <div className="Buzzer" ref={this.wrapperRef}>
         {this.props.children}
         <SettingsButton
-          name=""
-          room=""
+          name= "{this.state.name}"
+          room= "{this.state.room}"
           handleEdit={this.handleEdit}
         ></SettingsButton>
 
@@ -140,3 +173,4 @@ export default class OutsideAlerter extends Component {
     );
   }
 }
+
