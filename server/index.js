@@ -236,6 +236,8 @@ process.stdin.on("data", function (text) {
 //default commands
 createRoom("0");
 
+/*
 setTimeout(() => {
   process.stdout._write("> ");
 }, 250);
+*/
