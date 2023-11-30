@@ -88,7 +88,7 @@ app.post("/api/register", (req, res) => {
     createRoom(req.body["room"].trim());
   } else {
     res.sendStatus(200);
-    addPlayer(room, req.body["name"].trim());
+    addPlayer("0", req.body["name"].trim());
   }
 });
 
